@@ -44,7 +44,7 @@ urls = [
 ]
 
 #http 403 forbidden error 막기 위해 추가해야함
-headers = {'User-Agent': 'Chrome/66.0.3359.181'}
+headers = {'User-Agent': 'Chrome/74.0.3729.169'}
 for page_number in range(0,8):
     page_products = get_page_products(urls[page_number],headers)
     print(page_products)
