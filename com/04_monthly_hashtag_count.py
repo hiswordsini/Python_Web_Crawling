@@ -57,7 +57,8 @@ while end < 10:
             last_post = current_post
             end = 0
 
-tags_data = {}
+date_list = []
+date_list2 = []
 post = 0
 for i in a_list:
     driver.get(i)
@@ -73,32 +74,40 @@ for i in a_list:
             for k in tags:
                 tag_texts.append(k.text)
         if '#서촌찻집' in tag_texts:
-            for k in tag_texts:
-                if k[0] != '#':
-                    continue
-                else:
-                    if not (k in tags_data):
-                        tags_data[k] = 0
-                    tags_data[k] += 1
-#hashno = sorted(tags_data, key=lambda k : tags_data[k], reverse=True)
-hash = sorted(tags_data.items(), key=operator.itemgetter(1), reverse=True)
-print(len(tags_data))
-print(hash)
+            date = soup.find("time", {"class": "_1o9PC Nzb55"})
+            date_list.append(date['datetime'][0:10])
+            date_list2.append(date['title'])
+w, h = 12,10
+monthly = [[0 for x in range(w)] for y in range(h)]
+for x in date_list:
+    monthly[int(x[0:4])-2010][int(x[5:7])-1] += 1
+print(monthly)
+
 #Create Excel File using Xlsxwriter
-workbook = xlsxwriter.Workbook('서촌찻집.xlsx')
+workbook = xlsxwriter.Workbook('서촌찻집월별.xlsx')
 worksheet = workbook.add_worksheet()
 row = 0
 col = 0
-for x in hash:
-    worksheet.write(row, col, x[0])
-    worksheet.write(row, col+1, x[1])
-    row += 1
-    col = 0
+for i in range(0,10):
+    for j in range(0,12):
+        worksheet.write(row, col, str(i+2010)+"년"+str(j+1)+"월")
+        worksheet.write(row, col+1, monthly[i][j])
+        row += 1
+
 workbook.close()
+
+
+#for x in date_list:
+#    worksheet.write(row, col, x)
+#    row += 1
+#row = 0
+#col = 1
+#for x in date_list2:
+#    worksheet.write(row, col, x)
+#    row += 1
+#workbook.close()
 
 end = time.time()
 elapsed = end - start
 print(elapsed)
 
-# 드라이버를 종료한다.
-#driver.close()
